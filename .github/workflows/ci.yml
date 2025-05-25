@@ -18,22 +18,43 @@ jobs:
         with:
           python-version: '3.12'
 
-      # 3) Install PDM
+      # 3) Cache PDM packages
+      - name: Cache PDM
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pdm
+          key: pdm-${{ runner.os }}-${{ hashFiles('pdm.lock') }}
+          restore-keys: |
+            pdm-${{ runner.os }}-
+
+      # 4) Install PDM
       - name: Install PDM
         run: pip install pdm
 
-      # 4) Install all dependencies (including dev)
+      # 5) Install dependencies (including dev)
       - name: Install dependencies
         run: pdm install --dev
 
-      # 5) Run pre-commit hooks (black, isort, ruff, etc.)
+      # 6) Run pre-commit hooks (black, isort, ruff, etc.)
       - name: Run pre-commit hooks
         uses: pre-commit/action@v3.0.0
 
-      # 6) Run MyPy for type checking
+      # 7) Type check with MyPy
       - name: Type check with MyPy
         run: pdm run mypy src
 
-      # 7) Run tests with coverage
+      # 8) Run tests with coverage
       - name: Run tests with coverage
         run: pdm run pytest --cov=limit
+
+      # 9) Run vulture (dead code detection)
+      - name: Check for dead code with vulture
+        run: pdm run vulture src/
+
+      # 10) Run radon (complexity analysis)
+      - name: Analyze code complexity with radon
+        run: pdm run radon cc src/ -nc -a
+
+      # 11) Run pylint (error-level static checks)
+      - name: Run pylint
+        run: pdm run pylint --errors-only src/

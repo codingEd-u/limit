@@ -4,12 +4,10 @@ from limit.emitters.py_emitter import PythonEmitter
 from limit.limit_ast import ASTNode
 
 
-class Emitter(Protocol):
-    def __init__(self) -> None:
-        ...
+class Emitter(Protocol):  # pragma: no cover
+    def __init__(self) -> None: ...  # pragma: no cover
 
-    def get_output(self) -> str:
-        ...
+    def get_output(self) -> str: ...  # pragma: no cover
 
 
 # Placeholder stubs for future emitters that conform to Emitter
@@ -33,7 +31,7 @@ EmitterType = type[Emitter]
 
 
 class Transpiler:
-    def __init__(self, target: str):
+    def __init__(self, target: str) -> None:
         emitters: dict[str, EmitterType] = {
             "py": PythonEmitter,
             "python": PythonEmitter,

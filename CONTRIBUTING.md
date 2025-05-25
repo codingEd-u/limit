@@ -27,16 +27,6 @@ limit/
 │       ├── limit_transpile.py # Transpilation backend
 │       └── limit_uimap.py     # User alias/token mapper
 ├── tests/                    # Unit and property tests
-│   ├── __init__.py
-│   ├── conftest.py
-│   ├── test_ast.py
-│   ├── test_cli.py
-│   ├── test_lexer.py
-│   ├── test_parser.py
-│   ├── test_pyemitter.py
-│   ├── test_repl.py
-│   ├── test_transpile.py
-│   └── test_uimap.py
 ├── pyproject.toml            # Tool and build config
 ├── pdm.lock                  # Lock file
 ├── .pre-commit-config.yaml   # Pre-commit rules
@@ -70,7 +60,7 @@ pdm run pytest --cache-clear --cov=src/limit --cov-report=html
 
 ---
 
-## 🧪 Testing Guidelines
+## Testing Guidelines
 
 We use:
 
@@ -87,16 +77,16 @@ pdm run pytest --benchmark-enable
 ### Specific test module:
 
 ```bash
-pdm run pytest tests/test_limit_parser.py
+pdm run pytest tests/test_parser.py
 ```
 
 ### Coverage target:
 
-We aim for >90% total coverage, with **100%** on small/easy modules where practical. Coverage is enforced via `pytest-cov`.
+We aim for >90% total coverage, with **100%** on small/easy modules where practical.
 
 ---
 
-## 🪥 Code Style and Tooling
+## Code Style and Tooling
 
 All code must pass:
 
@@ -116,26 +106,26 @@ pdm run mypy src/
 
 ---
 
-## ✅ Pre-Commit Hooks
+## Pre-Commit Hooks
 
 We use [pre-commit](https://pre-commit.com/) to enforce standards automatically.
 
-Install hooks:
+### Install hooks:
 
 ```bash
-pre-commit install
+pdm run pre-commit install
 ```
 
-Run all hooks manually:
+### Run all hooks manually:
 
 ```bash
-pre-commit run --all-files
+pdm run pre-commit run --all-files
 ```
 
-Tip: to auto-fix issues:
+### Auto-fix issues:
 
 ```bash
-pre-commit run --all-files --hook-stage manual
+pdm run pre-commit run --all-files --hook-stage manual
 ```
 
 Pre-commit checks include:
@@ -144,11 +134,11 @@ Pre-commit checks include:
 * Import sorting (isort)
 * Ruff linting
 * Mypy type enforcement
-* Line ending fixes, trailing whitespace, and YAML checks
+* Line endings, trailing whitespace, and YAML sanity checks
 
 ---
 
-## 📦 Creating a Feature
+## Creating a Feature
 
 1. Create a feature branch:
 
@@ -162,13 +152,13 @@ git checkout -b feat/your-feature-name
 
 ---
 
-## 📜 License
+## License
 
 All contributions are accepted under the terms of the [MIT License](./LICENSE).
 
 ---
 
-## 🗣 Need Help?
+## Need Help?
 
 Open an issue or start a discussion if you:
 

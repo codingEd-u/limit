@@ -63,7 +63,7 @@ class Token:
 
 
 class Lexer:
-    def __init__(self, stream: CharacterStream):
+    def __init__(self, stream: CharacterStream) -> None:
         self.stream = stream
 
     def peek(self) -> str:
@@ -85,73 +85,108 @@ class Lexer:
         while not self.stream.end_of_file() and self.peek() != "\n":
             self.advance()
 
+    def match_operator(self) -> Token | None:
+        line, col = self.stream.line, self.stream.column
+        max_token = None
+        match_len = 0
+        candidate = ""
+
+        for i in range(32):  # reasonable cap
+            ch = self.stream.peek(i)
+            if ch == "":
+                break
+            candidate += ch
+            if candidate in token_hashmap:
+                max_token = candidate
+                match_len = i + 1
+
+        if max_token:
+            for _ in range(match_len):
+                self.advance()
+            return Token(token_hashmap[max_token], max_token, line, col)
+
+        return None
+
     def next_token(self) -> Token:
-        # First EOF check
         if self.stream.end_of_file():
             return Token("EOF", "EOF", self.stream.line, self.stream.column)
 
         self.skip_whitespace()
 
-        # Second EOF check
         if self.stream.end_of_file():
             return Token("EOF", "EOF", self.stream.line, self.stream.column)
 
-        line, col = self.stream.line, self.stream.column
         ch = self.peek()
+        line, col = self.stream.line, self.stream.column
 
-        # Match multi-char symbols (non-alphanumeric only)
-        for symbol in sorted(token_hashmap.keys(), key=len, reverse=True):
-            if (
-                not symbol.isalnum()
-                and self.stream.source[
-                    self.stream.position : self.stream.position + len(symbol)
-                ]
-                == symbol
-            ):
-                for _ in range(len(symbol)):
-                    self.advance()
-                return Token(token_hashmap[symbol], symbol, line, col)
-
-        # Identifiers and keywords
+        # 1. Identifier or keyword
         if ch.isalpha() or ch == "_":
-            word = ""
+            ident = ""
             while not self.stream.end_of_file() and (
                 self.peek().isalnum() or self.peek() == "_"
             ):
-                word += self.advance()
-            lookup = word.upper()
-            tok_type = token_hashmap.get(lookup, "IDENT")
-            return Token(tok_type, word, line, col)
+                ident += self.advance()
+            if ident in token_hashmap:
+                return Token(token_hashmap[ident], ident, line, col)
+            return Token("IDENT", ident, line, col)
 
-        # Numeric literal (int or float)
+        # 2. Number or float
         if ch.isdigit():
-            value = ""
+            num = ""
             has_dot = False
             while not self.stream.end_of_file() and (
-                self.peek().isdigit() or (self.peek() == "." and not has_dot)
+                self.peek().isdigit() or self.peek() == "."
             ):
                 if self.peek() == ".":
+                    if has_dot:
+                        raise SyntaxError(
+                            f"Invalid float format at line {line}, col {col}"
+                        )
                     has_dot = True
-                value += self.advance()
-            token_type = "FLOAT" if has_dot else "NUMBER"
-            return Token(token_type, value, line, col)
+                num += self.advance()
+            return Token("FLOAT" if has_dot else "NUMBER", num, line, col)
 
-        # String literal
+        # 3. String
         if ch in ('"', "'"):
             quote = self.advance()
-            string_value = ""
+            val = ""
             while not self.stream.end_of_file():
-                if self.peek() == quote:
+                if self.peek() == "\\":
+                    val += self.advance()
+                    if not self.stream.end_of_file():
+                        val += self.advance()
+                elif self.peek() == quote:
                     break
-                string_value += self.advance()
+                else:
+                    val += self.advance()
             if self.peek() == quote:
                 self.advance()
-                return Token("STRING", string_value, line, col)
-            else:
-                raise SyntaxError(f"Unterminated string at line {line}, col {col}")
+                return Token("STRING", val, line, col)
+            raise SyntaxError(f"Unterminated string at line {line}, col {col}")
 
-        # Unknown character fallback
+        # 4. Compound or symbolic operator
+        token = self.match_operator()
+        if token:
+            return token
+
+        # 5. Unknown character → error
         if not self.stream.end_of_file():
             return Token("ERROR", self.advance(), line, col)
+        else:
+            return Token("EOF", "EOF", line, col)  # pragma: no cover
 
-        return Token("EOF", "EOF", line, col)
+
+__all__ = ["CharacterStream", "Lexer", "Token", "token_hashmap"]
+
+## For dev
+# def print_tokens(source: str) -> None:
+#     lexer = Lexer(CharacterStream(source))
+#     while True:
+#         tok = lexer.next_token()
+#         print(tok)
+#         if tok.type == "EOF":
+#             break
+
+# if __name__ == "__main__":
+# sample = "TO0"
+# print_tokens(sample)

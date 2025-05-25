@@ -65,6 +65,9 @@ class PythonEmitter:
         if node.value == "NOT":
             e = self.emit_expr(node.children[0])
             return f"(not {e})"
+        if node.value == "TRUTHY":
+            e = self.emit_expr(node.children[0])
+            return f"bool({e})"
         left = self.emit_expr(node.children[0])
         right = self.emit_expr(node.children[1])
         op = "and" if node.value == "AND" else "or"
@@ -132,19 +135,6 @@ class PythonEmitter:
             for stmt in node.else_children:
                 self._visit(stmt)
             self.indent -= 1
-
-    def emit_func(self, node: ASTNode) -> None:
-        params = ", ".join(str(p) for p in (node.type or []))
-        sig = f"def {node.value}({params}):"
-        if node.return_type:
-            sig = sig[:-1] + f" -> {node.return_type}:"
-        self.lines.append(f"{self.indent_str()}{sig}")
-        self.indent += 1
-        if not node.children:
-            self.lines.append(f"{self.indent_str()}pass")
-        for stmt in node.children:
-            self._visit(stmt)
-        self.indent -= 1
 
     def emit_call(self, node: ASTNode) -> None:
         self.lines.append(f"{self.indent_str()}{self.emit_expr_call(node)}")
@@ -237,49 +227,6 @@ class PythonEmitter:
             f"{self.indent_str()}    {var} = None"
         )
 
-    def emit_class(self, node: ASTNode) -> None:
-        base = "object"
-        new_children = []
-
-        for child in node.children:
-            if child.kind == "extends":
-                if not isinstance(child.value, str):
-                    raise TypeError("Expected string in class extends base")
-                base = child.value
-            else:
-                new_children.append(child)
-
-        self.lines.append(f"{self.indent_str()}class {node.value}({base}):")
-        self.indent += 1
-
-        if not new_children:
-            self.lines.append(f"{self.indent_str()}pass")
-
-        for child in new_children:
-            if child.kind == "func" and child.value == "init":
-                child.value = "__init__"
-                if base != "object":
-                    super_call = ASTNode(
-                        kind="call",
-                        value=ASTNode(
-                            kind="member",
-                            value="__init__",
-                            children=[
-                                ASTNode(
-                                    kind="call",
-                                    value=ASTNode(kind="identifier", value="super"),
-                                    children=[],
-                                )
-                            ],
-                        ),
-                        children=[],
-                    )
-                    expr_stmt = ASTNode(kind="expr_stmt", children=[super_call])
-                    child.children.insert(0, expr_stmt)
-            self._visit(child)
-
-        self.indent -= 1
-
     def emit_loop(self, node: ASTNode) -> None:
         if node.value == "FOR" and node.children and node.children[0].kind == "range":
             range_node = node.children[0]
@@ -297,7 +244,7 @@ class PythonEmitter:
                 # FOR i AT A TO B  =>  range(A, B)
                 start = str(range_node.children[1].value)
                 end = str(range_node.children[2].value)
-            elif len(range_node.children) == 4:
+            elif len(range_node.children) == 4:  # pragma: no branch
                 # FOR i AT A TO B BY C  =>  range(A, B, C)
                 start = str(range_node.children[1].value)
                 end = str(range_node.children[2].value)
@@ -345,10 +292,12 @@ class PythonEmitter:
         if kind in preferred:
             method = getattr(self, f"emit_expr_{kind}", None)
             if callable(method):
+                # pylint: disable=not-callable
                 return str(method(node))
 
         fallback = getattr(self, f"emit_{kind}", None)
         if callable(fallback):
+            # pylint: disable=not-callable
             return str(fallback(node))
 
         raise NotImplementedError(f"No expression emitter for kind '{kind}'")
@@ -376,4 +325,79 @@ class PythonEmitter:
         meth = getattr(self, f"emit_{node.kind}", None)
         if not meth:
             raise NotImplementedError(f"PythonEmitter: no emitter for {node.kind}")
+        # pylint: disable=not-callable
         return str(meth(node))
+
+    def emit_class(self, node: ASTNode) -> None:
+        base = "object"
+        new_children = []
+
+        # Determine base class and filter out 'extends'
+        for child in node.children:
+            if child.kind == "extends":
+                if not isinstance(child.value, str):
+                    raise TypeError("Expected string in class extends base")
+                base = child.value
+            else:
+                new_children.append(child)
+
+        self.lines.append(f"{self.indent_str()}class {node.value}({base}):")
+        self.indent += 1
+
+        if not new_children:
+            self.lines.append(f"{self.indent_str()}pass")
+
+        for child in new_children:
+            if child.kind == "func":  # pragma: no branch
+                child._in_class = True
+                if child.value == "init":
+                    child.value = "__init__"
+
+                    if base != "object":
+                        super_call = ASTNode(
+                            kind="call",
+                            value=ASTNode(
+                                kind="member",
+                                value="__init__",
+                                children=[
+                                    ASTNode(
+                                        kind="call",
+                                        value=ASTNode(kind="identifier", value="super"),
+                                        children=[],
+                                    )
+                                ],
+                            ),
+                            children=[],
+                        )
+                        child.children.insert(
+                            0, ASTNode(kind="expr_stmt", children=[super_call])
+                        )
+
+            self._visit(child)
+
+        self.indent -= 1
+
+    def emit_func(self, node: ASTNode) -> None:
+        if isinstance(node.type, str):
+            raw_params = node.type.split(",")
+        elif isinstance(node.type, list):
+            raw_params = node.type
+        else:
+            raw_params = []
+
+        is_method = hasattr(node, "_in_class") and node._in_class is True
+        cleaned = [p.strip() for p in raw_params if p.strip()]
+        if is_method and "self" not in cleaned:
+            cleaned.insert(0, "self")
+
+        sig = f"def {node.value}({', '.join(cleaned)}):"
+        if node.return_type:
+            sig = sig[:-1] + f" -> {node.return_type}:"
+
+        self.lines.append(f"{self.indent_str()}{sig}")
+        self.indent += 1
+        if not node.children:
+            self.lines.append(f"{self.indent_str()}pass")
+        for stmt in node.children:
+            self._visit(stmt)
+        self.indent -= 1

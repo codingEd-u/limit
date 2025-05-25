@@ -31,6 +31,7 @@ class ASTNode:
         self.type = type_
         self.return_type = return_type
         self.else_children: list["ASTNode"] = []
+        self._in_class: bool | None = None
 
     def __repr__(self) -> str:
         parts = [f"{self.kind}"]
