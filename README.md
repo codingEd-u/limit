@@ -4,19 +4,19 @@
 
 ---
 
-## 🚀 Features
+##  Features
 
-* ⚙️ **Custom Handwritten Parser** — No parser generators; full control over syntax and error handling.
-* ↻ **Transpiles to Python** — With pluggable emitters for future targets like C, JS, or WASM.
-* 🧠 **User Interface Mapper** — Bind custom aliases to tokens for building DSLs or visual languages.
-* 🧪 **100% Unit Test Discipline** — Over 240 passing tests, including fuzz, branch, and error coverage.
-* 💿 **REPL Interface** — Execute LIMIT code interactively with verbose feedback and expression evaluation.
-* 📦 **CI/CD Ready** — GitHub Actions, pre-commit hooks, and strict code style enforcement.
-* 🧠 **Educationally Valuable** — Great for exploring language construction and compiler internals.
+* **Custom Handwritten Parser** — No parser generators; full control over syntax and error handling.
+* **Transpiles to Python** — With pluggable emitters for future targets like C, JS, or WASM.
+* **User Interface Mapper** — Bind custom aliases to tokens for building DSLs or visual languages.
+* **100% Unit Test Discipline** — Over 240 passing tests, including fuzz, branch, and error coverage.
+* **REPL Interface** — Execute LIMIT code interactively with verbose feedback and expression evaluation.
+* **CI/CD Ready** — GitHub Actions, pre-commit hooks, and strict code style enforcement.
+* **Educationally Valuable** — Great for exploring language construction and compiler internals.
 
 ---
 
-## 📦 Quickstart
+## Quickstart
 
 ### 1. Clone & Install
 
@@ -34,7 +34,7 @@ pdm run python -m limit.limit_cli
 
 ---
 
-## 📦 Installation (Clean, Bulletproof)
+## Installation (Clean, Bulletproof)
 
 ### 1. Install Python 3.12
 
@@ -120,7 +120,7 @@ repos:
 
 ---
 
-## 🔧 Usage
+## Usage
 
 ### Launch the REPL
 
@@ -136,7 +136,7 @@ pdm run python -m limit.limit_cli
 
 ---
 
-### 📚 Example: hello.limit
+### Example: hello.limit
 
 ```limit
 @ f()
@@ -150,7 +150,7 @@ CALL f
 
 ---
 
-### 🧰 Example: Counter
+### Example: Counter
 
 ```limit
 @ counter()
@@ -168,7 +168,7 @@ CALL counter
 
 ---
 
-## 🖾 Packaging (Optional)
+## Packaging (Optional)
 
 Build the package:
 

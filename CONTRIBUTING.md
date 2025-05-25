@@ -6,7 +6,7 @@ LIMIT is developed with transparency and precision, heavily accelerated using AI
 
 ---
 
-## 🧱 Project Structure
+## Project Structure
 
 ```
 limit/
@@ -38,7 +38,7 @@ limit/
 
 ---
 
-## 🛠 Development Setup
+## Development Setup
 
 1. Install [PDM](https://pdm.fming.dev) and dependencies:
 
