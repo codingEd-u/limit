@@ -1,0 +1,28 @@
+[run]
+branch = True
+parallel = True
+source =
+    limit
+    limit_cli.py
+    limit_repl.py
+omit =
+    */tests/*
+    */.venv/*
+    */__init__.py
+
+[report]
+show_missing = True
+skip_covered = True
+exclude_lines =
+    pragma: no cover
+    if __name__ == .__main__.:
+    @abstractmethod
+    raise NotImplementedError
+
+[paths]
+source =
+    limit
+    */site-packages
+
+[html]
+directory = coverage_html_report

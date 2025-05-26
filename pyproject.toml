@@ -1,0 +1,115 @@
+[project]
+name = "limit"
+version = "0.0.1-alpha"
+description = "Minimal language transpiler with REPL and Python emitter"
+authors = [{ name = "CodingEdu", email = "codingedu480@gmail.com" }]
+requires-python = ">=3.12"
+readme = "README.md"
+license = { text = "MIT" }  # or a file path
+classifiers = [
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Compilers",
+]
+
+[project.scripts]
+limit = "limit.limit_cli:main"
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+version = ">=2.0.0"
+
+[tool.pdm.build]
+package-dir = "src"
+
+[tool.pdm.scripts]
+test = "pytest"
+typecheck = "mypy src"
+coverage = "pytest --cov=limit --cov-report=term-missing"
+
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | __pycache__
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 88
+known_first_party = ["limit"]
+src_paths = ["src"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+ignore_missing_imports = true
+show_error_codes = true
+namespace_packages = true
+explicit_package_bases = true
+mypy_path = "src"
+exclude = "^tests/"
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+src = ["src"]
+fix = true
+
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B"]
+ignore = ["E203", "E266", "E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "--cov=limit --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["limit"]
+branch = true
+parallel = true
+concurrency = ["thread", "multiprocessing"]
+
+[tool.coverage.paths]
+source = ["src"]
+
+[tool.pdm.resolution]
+python = "3.12"
+
+[dependency-groups]
+dev = [
+    "black",
+    "mypy",
+    "isort",
+    "pytest",
+    "pytest-cov",
+    "hypothesis",
+    "pytest-benchmark",
+    "pylint",
+    "vulture",
+    "radon>=6.0.1",
+    "bandit",
+    "flake8",
+    "flake8-bugbear",
+    "flake8-comprehensions",
+    "flake8-eradicate",
+]
+
+[tool.coverage.report]
+fail_under = 100

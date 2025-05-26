@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  COVERAGE_PROCESS_START: .coveragerc
+
+
+jobs:
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      # 1) Grab the repo
+      - uses: actions/checkout@v3
+
+      # 2) Set up Python 3.12
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      # 3) Cache PDM packages
+      - name: Cache PDM
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pdm
+          key: pdm-${{ runner.os }}-${{ hashFiles('pdm.lock') }}
+          restore-keys: |
+            pdm-${{ runner.os }}-
+
+      # 4) Install PDM
+      - name: Install PDM
+        run: pip install pdm
+
+      # 5) Install dependencies (including dev)
+      - name: Install dependencies
+        run: pdm install --dev
+
+      # 6) Run pre-commit hooks (black, isort, ruff, etc.)
+      - name: Run pre-commit hooks
+        uses: pre-commit/action@v3.0.0
+
+      # 7) Type check with MyPy
+      - name: Type check with MyPy
+        run: pdm run mypy src
+
+      # 8) Run tests with coverage
+      - name: Run tests with coverage
+        run: pdm run pytest --cov=limit
+        env:
+          COVERAGE_PROCESS_START: pyproject.toml
+
+      # 10) Run radon (complexity analysis)
+      - name: Analyze code complexity with radon
+        run: pdm run radon cc src/ -nc -a
+
+      # 11) Run pylint (error-level static checks)
+      - name: Run pylint
+        run: pdm run pylint --errors-only src/
