@@ -1,4 +1,57 @@
-# limit_parser.py
+"""
+LIMIT Language Parser
+
+Parses LIMIT language source tokens into structured abstract syntax trees (ASTs).
+
+This module implements the core LIMIT parser logic, which transforms a flat list of
+lexer-generated `Token` objects into a validated tree of `ASTNode` instances. The parser
+fully supports the LIMIT language syntax, including nested expressions, block scoping,
+and control flow constructs. It serves as the backbone for all downstream analysis,
+transpilation, or interpretation.
+
+Supported Constructs
+--------------------
+- Expressions:
+    * Prefix notation: `[PLUS x 1]`, `[CALL foo 1 2]`
+    * Nested expressions with proper bracket handling
+    * Full operator support: arithmetic, boolean, comparison, member access, call, etc.
+
+- Statements:
+    * Assignments: `= x 5`, `= obj.method(...)`
+    * Control flow: `IF`, `WHILE`, `FOR`, `TRY`/`CATCH`/`FINALLY`
+    * Functions: `FUNC name(...) { ... }` with optional return types
+    * Classes: `CLASS Foo EXTENDS Bar { ... }`
+    * I/O: `INPUT`, `PRINT`
+    * Modules: `MODULE`, `IMPORT`, `EXPORT`
+    * Special: `SKIP`, `PROPAGATE`, `RETURN`, `BREAK`, `CONTINUE`
+
+Parser Behavior
+---------------
+- Operates in strict mode by default: raises `SyntaxError` on invalid or malformed input.
+- Performs multi-token lookahead and supports nested block structures.
+- Supports both statement parsing and expression parsing via dedicated entry points.
+- Expression parsing is exclusively prefix-based and requires square brackets `[]`.
+
+Entry Points
+------------
+- `parse()`: Parse a full program into a list of top-level AST nodes.
+- `parse_expression()`: Parse a single prefix expression (must be bracketed).
+- `parse_statement()`: Parse a single statement (assignment, loop, control flow, etc.).
+- `parse_expr_entrypoint()`: Parse one-liner expressions or literals (REPL mode).
+
+Returns
+-------
+list[ASTNode]
+    A list of parsed and validated ASTNode objects, representing the full abstract
+    syntax tree (AST) of the LIMIT program or subexpression.
+
+Raises
+------
+SyntaxError
+    Raised when malformed input is encountered, unexpected tokens appear,
+    or grammar rules are violated.
+"""
+
 from __future__ import annotations
 
 from limit.limit_ast import ASTNode
@@ -7,6 +60,93 @@ from limit.limit_lexer import Token
 
 
 class Parser:
+    """
+    LIMIT Parser Class
+
+    Responsible for transforming a list of lexical tokens into structured abstract
+    syntax trees (`ASTNode` objects) that represent a valid LIMIT program.
+
+    This parser handles both top-level program structure and nested constructs such as
+    function bodies, loop blocks, conditionals, and expressions. It supports full
+    prefix-style expression parsing and enforces strict grammar rules unless explicitly
+    configured otherwise.
+
+    Attributes
+    ----------
+    tokens : list[Token]
+        The input token stream to be parsed.
+    position : int
+        Current index into the token stream.
+    in_block : bool
+        Tracks whether the parser is currently inside a scoped block (e.g., function or loop).
+    unary_ops : set[str]
+        Set of operator token types considered unary (e.g., NOT, TRUTHY).
+    arith_ops : set[str]
+        Set of arithmetic operator token types (e.g., PLUS, SUB, MULT).
+    bool_ops : set[str]
+        Set of boolean operator token types (e.g., AND, OR, NOT).
+    comparison_ops : set[str]
+        Set of comparison operator token types (e.g., LT, EQ, GT).
+    binary_ops : set[str]
+        Union of arithmetic, boolean, and comparison operators.
+    prefix_ops : set[str]
+        All operator tokens allowed as the first token inside bracketed expressions.
+    expression_ops : set[str]
+        All valid expression-start tokens, including CALL and PROP.
+
+    Methods
+    -------
+    parse() -> list[ASTNode]
+        Parse a complete LIMIT program into an AST.
+    parse_statement(strict: bool = True) -> ASTNode
+        Parse a single LIMIT statement.
+    parse_expression(strict: bool = True) -> ASTNode
+        Parse a bracketed prefix expression.
+    parse_expr_or_literal(strict: bool = True) -> ASTNode
+        Parse a literal, identifier, or expression.
+    parse_function(...) -> ASTNode
+        Parse a function definition, including parameters and optional return type.
+    parse_class(...) -> ASTNode
+        Parse a class definition with optional inheritance.
+    parse_block(...) -> list[ASTNode]
+        Parse a `{}`-enclosed block of statements.
+    parse_try(...) -> ASTNode
+        Parse a `TRY`/`CATCH`/`FINALLY` block.
+    parse_loop_while(...) -> ASTNode
+        Parse a `WHILE` loop with optional bracketed condition.
+    parse_loop_range(...) -> ASTNode
+        Parse a `FOR` loop with `TO`, optional `AT` and `BY` range components.
+    parse_assignment(...) -> ASTNode
+        Parse an assignment statement.
+    parse_call(...) -> ASTNode
+        Parse a `CALL` expression or method call.
+    parse_return(...) -> ASTNode
+        Parse a `RETURN` statement with optional value.
+    parse_input(...) -> ASTNode
+        Parse an `INPUT` statement, optionally from file.
+    parse_print(...) -> ASTNode
+        Parse a `PRINT` statement.
+    parse_export(...) -> ASTNode
+        Parse an `EXPORT` declaration.
+    parse_import(...) -> ASTNode
+        Parse an `IMPORT` directive.
+    parse_module(...) -> ASTNode
+        Parse a `MODULE` declaration.
+    parse_prefix_operator(...) -> ASTNode
+        Parse a standalone prefix operator and its operands.
+    parse_member_access(...) -> ASTNode
+        Parse chained `.` access (e.g., `obj.x.y`).
+    parse_propagate(...) -> ASTNode
+        Parse a `PROPAGATE` (`$`) statement.
+    parse_skip() -> ASTNode
+        Parse a `SKIP` placeholder.
+
+    Raises
+    ------
+    SyntaxError
+        When an invalid construct or malformed syntax is encountered during parsing.
+    """
+
     def __init__(self, tokens: list[Token]) -> None:
         self.tokens: list[Token] = tokens
         self.position: int = 0
@@ -106,6 +246,7 @@ class Parser:
         return self.parse_expression()
 
     def parse(self) -> list[ASTNode]:
+        """Parse a full LIMIT program and return a list of top-level AST nodes."""
         ast: list[ASTNode] = []
         while self.current().type != "EOF":
             pos_before = self.position
@@ -122,12 +263,14 @@ class Parser:
         return ast
 
     def parse_skip(self) -> ASTNode:
+        """Parse a SKIP statement used as a placeholder stub."""
         tok = self.match("SKIP", "IDENT")
         assert tok is not None  # for mypy
 
         return ASTNode("skip", line=tok.line, col=tok.col)
 
     def parse_propagate(self, strict: bool = True) -> ASTNode:
+        """Parse a PROPAGATE (`$`) statement to forward errors."""
         if not self.in_block:
             raise SyntaxError("Propagate operator `$` only allowed inside functions.")
 
@@ -157,6 +300,7 @@ class Parser:
         )
 
     def parse_loop_while(self, strict: bool = True) -> ASTNode:
+        """Parse a WHILE loop with condition and body block."""
         loop_tok = self.match("LOOP_WHILE", strict=strict)
         if loop_tok is None:
             raise SyntaxError("Expected 'WHILE' loop start")
@@ -192,6 +336,7 @@ class Parser:
         )
 
     def parse_expr_or_literal(self, strict: bool = True) -> ASTNode:
+        """Parse either a bracketed expression or a single literal/identifier."""
         if self.current().type == "LBRACK":
             expr = self.parse_expression(strict=strict)
             return expr
@@ -209,6 +354,7 @@ class Parser:
         return ASTNode(kind, tok.value, line=tok.line, col=tok.col)
 
     def parse_prefix_operator(self, strict: bool = True) -> ASTNode:
+        """Parse a prefix operator expression like `+ x 1` or `NOT flag`."""
         op_tok = self.match(
             "PLUS", "SUB", "MULT", "DIV", "MOD", "AND", "NOT", strict=strict
         )
@@ -243,6 +389,7 @@ class Parser:
         )
 
     def parse_call(self, strict: bool = True) -> ASTNode:
+        """Parse a CALL expression with function or method syntax and arguments."""
         call_tok = self.match("CALL", strict=strict)
         if call_tok is None:
             raise SyntaxError("Expected 'CALL' keyword")
@@ -296,6 +443,7 @@ class Parser:
         raise SyntaxError("CALL must be followed by identifier or member access")
 
     def parse_statement(self, strict: bool = True) -> ASTNode:
+        """Parse a single top-level or block-level LIMIT statement."""
         tok = self.current()
 
         if tok.type == "COMMA":
@@ -389,6 +537,7 @@ class Parser:
             ) from e
 
     def parse_try(self, strict: bool = True) -> ASTNode:
+        """Parse a TRY block with CATCH handlers and optional FINALLY."""
         try_tok = self.match("TRY", "IDENT", strict=strict)
         if try_tok is None or (try_tok.type == "IDENT" and try_tok.value != "TRY"):
             raise SyntaxError("Expected 'TRY' keyword")
@@ -455,6 +604,7 @@ class Parser:
     def parse_block(
         self, open_type: str = "LBRACE", strict: bool = True
     ) -> list[ASTNode]:
+        """Parse a `{}`-enclosed scoped block of LIMIT statements."""
         if open_type != "LBRACE":
             raise SyntaxError(
                 f"Invalid block delimiter: {open_type}. Blocks must use '{{' and '}}'."
@@ -492,6 +642,7 @@ class Parser:
         return stmts
 
     def parse_if(self, strict: bool = True) -> ASTNode:
+        """Parse an IF condition with optional ELSE block."""
         if_tok = self.match("IF", strict=strict)
         assert if_tok is not None  # for mypy
 
@@ -554,6 +705,7 @@ class Parser:
         return node
 
     def parse_assignment(self, strict: bool = True) -> ASTNode:
+        """Parse a variable assignment with identifier and right-hand value."""
         assign_tok = self.match("ASSIGN", strict=strict)
         assert assign_tok is not None  # for mypy
 
@@ -690,6 +842,7 @@ class Parser:
         )
 
     def parse_class(self, strict: bool = True) -> ASTNode:
+        """Parse a CLASS definition with optional EXTENDS and class body."""
         class_tok = self.match("CLASS", strict=strict)
         assert class_tok is not None  # for mypy
         name_tok = self.match("IDENT", strict=strict)
@@ -722,6 +875,7 @@ class Parser:
         )
 
     def parse_loop_block(self, kind: str, strict: bool = True) -> ASTNode:
+        """Parse a generic loop block enclosed in braces (used by FOR/WHILE fallback)."""
         loop_tok = self.match(
             "LOOP_FOR" if kind == "FOR" else "LOOP_WHILE", strict=strict
         )
@@ -739,6 +893,7 @@ class Parser:
         )
 
     def parse_function(self, strict: bool = True) -> ASTNode:
+        """Parse a FUNC definition including parameters, return type, and body."""
         func_tok = self.match("FUNC", strict=strict)
 
         name_tok = self.match("IDENT", strict=strict)
@@ -774,6 +929,7 @@ class Parser:
         return node
 
     def parse_return(self, strict: bool = True) -> ASTNode:
+        """Parse a RETURN statement with optional expression or value."""
         if not self.in_block:
             raise SyntaxError("RETURN is only allowed inside function blocks.")
 
@@ -882,6 +1038,7 @@ class Parser:
         return ASTNode("continue", line=tok.line, col=tok.col)
 
     def parse_export(self, strict: bool = True) -> ASTNode:
+        """Parse an EXPORT statement that exposes an identifier."""
         tok = self.match("EXPORT", "IDENT", strict=strict)
         if tok is None:
             raise SyntaxError("Expected 'EXPORT' keyword")
@@ -940,6 +1097,7 @@ class Parser:
         )
 
     def parse_input(self, strict: bool = True) -> ASTNode:
+        """Parse an INPUT statement from stdin or FROM file path."""
         tok = self.match("INPUT", strict=strict)
         if tok is None:
             raise SyntaxError("Expected 'INPUT' keyword")
@@ -984,6 +1142,7 @@ class Parser:
         return node
 
     def parse_import(self, strict: bool = True) -> ASTNode:
+        """Parse an IMPORT statement to load a module from string path."""
         tok = self.match("IMPORT", "IDENT", strict=strict)
         if tok is None:
             raise SyntaxError("Expected 'IMPORT' keyword")
@@ -1049,6 +1208,7 @@ class Parser:
         return ASTNode("module", value=name_tok.value, line=tok.line, col=tok.col)
 
     def parse_expression(self, strict: bool = True) -> ASTNode:
+        """Parse a prefix-style bracketed expression like `[PLUS x 1]`."""
         if self.current().type != "LBRACK":
             if strict:
                 raise SyntaxError(
@@ -1183,6 +1343,7 @@ class Parser:
         )
 
     def parse_loop_range(self, strict: bool = True) -> ASTNode:
+        """Parse a FOR loop with optional AT (start) and BY (step) clauses."""
         loop_tok = self.match("LOOP_FOR", strict=strict)
         assert loop_tok is not None  # for mypy
 

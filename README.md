@@ -141,10 +141,9 @@ pdm run python -m limit.limit_cli
 ### Example: hello.limit
 
 ```limit
-@ f()
-{
+@ f() {
   = msg "Hello, LIMIT!"
-  PRINT msg
+  ! msg
 }
 
 CALL f
@@ -155,12 +154,10 @@ CALL f
 ### Example: Counter
 
 ```limit
-@ counter()
-{
+@ counter() {
   = x 0
-  WHILE [< x 5]
-  {
-    PRINT x
+  WHILE [< x 5] {
+    ! x
     = x [+ x 1]
   }
 }

@@ -31,6 +31,9 @@ package-dir = "src"
 test = "pytest"
 typecheck = "mypy src"
 coverage = "pytest --cov=limit --cov-report=term-missing"
+docs = "mkdocs serve"
+docs-build = "mkdocs build"
+docs-deploy = "mkdocs gh-deploy"
 
 [tool.black]
 line-length = 88
@@ -109,6 +112,11 @@ dev = [
     "flake8-bugbear",
     "flake8-comprehensions",
     "flake8-eradicate",
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocstrings[python]",
+    "mkdocs-autorefs",
+    "mkdocs-section-index"
 ]
 
 [tool.coverage.report]

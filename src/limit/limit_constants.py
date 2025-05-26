@@ -1,3 +1,43 @@
+"""
+Defines the canonical token vocabulary and token mappings for the LIMIT language.
+
+Contents:
+    1. CANONICAL_TOKENS:
+        - Ordered list of all valid tokens in LIMIT.
+        - Includes operators, keywords, literals, delimiters, and primitives.
+        - Used by the lexer, parser, emitter, and UI alias mapper.
+
+    2. CANONICAL_TOKEN_MAP:
+        - Maps human-readable symbolic names (e.g., 'ADDITION', 'WHILE_LOOP') to canonical token strings.
+        - Used for alias resolution, introspection, and external sugar configuration.
+
+    3. operator_tokens:
+        - Indexed operator map used by the parser to normalize arithmetic, logical, and comparison tokens.
+
+    4. token_hashmap:
+        - Maps raw input strings (like '+', '==', 'RETURN') to canonical tokens.
+        - Used by the lexer for longest-match recognition and token normalization.
+
+    5. CONTROL_SYMBOLS:
+        - Subset of CANONICAL_TOKENS representing all valid control structures.
+        - Used by UI mappers and token validators.
+
+    6. Token Categories and Constants:
+        - Includes EOF, IDENT, ERROR, NUMBER, STRING, LITERAL.
+        - Also defines character groups (e.g., WHITESPACE_CHARS, QUOTE_CHARS) and delimiter tokens.
+
+Usage:
+    These definitions are the single source of truth for all token-based logic in LIMIT.
+    Any addition to language syntax must first be reflected in this module to ensure consistency.
+
+Used by:
+    - Lexer (`token_hashmap`, `CANONICAL_TOKENS`)
+    - Parser (`operator_tokens`, `CONTROL_SYMBOLS`)
+    - REPL alias engine (`CANONICAL_TOKEN_MAP`)
+    - Transpilers and emitters (via token normalization)
+
+"""
+
 CANONICAL_TOKENS = [
     # Arithmetic and logic ops
     "PLUS",

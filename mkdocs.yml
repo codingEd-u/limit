@@ -1,0 +1,31 @@
+site_name: LIMIT Language Docs
+theme:
+  name: material
+
+nav:
+  - Home: index.md
+
+  - Guide:
+      - Quickstart: quickstart.md
+      - Syntax Cheatsheet: syntax.md
+      - REPL Usage: repl.md
+
+  - API Reference:
+      - Lexer: api/limit_lexer.md
+      - Parser: api/limit_parser.md
+      - AST: api/limit_ast.md
+      - CLI: api/limit_cli.md
+      - REPL Engine: api/limit_repl.md
+      - Python Emitter: api/limit_py_emitter.md
+      - UserInterface Mapper: api/limit_uimap.md
+      - Constants: api/limit_constants.md
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: ["src"] 
+          options:
+            docstring_style: google  # or numpy, depending on your style
+            merge_init_into_class: true
