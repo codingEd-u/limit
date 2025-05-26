@@ -4,6 +4,15 @@ version = "0.0.1-alpha"
 description = "Minimal language transpiler with REPL and Python emitter"
 authors = [{ name = "CodingEdu", email = "codingedu480@gmail.com" }]
 requires-python = ">=3.12"
+readme = "README.md"
+license = { text = "MIT" }  # or a file path
+classifiers = [
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Compilers",
+]
 
 [project.scripts]
 limit = "limit.limit_cli:main"
@@ -17,6 +26,11 @@ version = ">=2.0.0"
 
 [tool.pdm.build]
 package-dir = "src"
+
+[tool.pdm.scripts]
+test = "pytest"
+typecheck = "mypy src"
+coverage = "pytest --cov=limit --cov-report=term-missing"
 
 [tool.black]
 line-length = 88
@@ -91,3 +105,6 @@ dev = [
     "flake8-comprehensions",
     "flake8-eradicate",
 ]
+
+[tool.coverage.report]
+fail_under = 100
