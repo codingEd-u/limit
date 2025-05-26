@@ -1319,3 +1319,42 @@ def test_repl_empty_code(
     limit_repl.start_repl()
     captured = capsys.readouterr()
     assert "Limit REPL" in captured.out
+
+
+def test_repl_flatten_ast_invalid_branch(monkeypatch: pytest.MonkeyPatch) -> None:
+    import limit.limit_repl
+    from limit.limit_ast import ASTNode
+    from limit.limit_lexer import Token
+
+    class DummyParser:
+        def __init__(self, _: Any) -> None:
+            pass
+
+        def parse(self) -> list[Any]:
+            return [[ASTNode("assign", "x", [])], "not_a_list"]
+
+    class DummyLexer:
+        def __init__(self, _: Any) -> None:
+            self.called = False
+
+        def next_token(self) -> Token:
+            if not self.called:
+                self.called = True
+                return Token("IDENT", "x", 1, 1)
+            return Token("EOF", "EOF", 1, 2)
+
+    monkeypatch.setattr("limit.limit_repl.Lexer", DummyLexer)
+    monkeypatch.setattr("limit.limit_repl.Parser", DummyParser)
+
+    inputs = iter(["= x 1", "exit"])
+    monkeypatch.setattr("builtins.input", lambda _: next(inputs))
+
+    printed: list[str] = []
+    monkeypatch.setattr(
+        "builtins.print",
+        lambda *args, **kwargs: printed.append(" ".join(str(arg) for arg in args)),
+    )
+
+    limit.limit_repl.start_repl()
+
+    assert any("Expected list of lists of ASTNode" in line for line in printed)
