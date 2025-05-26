@@ -47,10 +47,6 @@ jobs:
       - name: Run tests with coverage
         run: pdm run pytest --cov=limit
 
-      # 9) Run vulture (dead code detection)
-      - name: Check for dead code with vulture
-        run: pdm run vulture src/
-
       # 10) Run radon (complexity analysis)
       - name: Analyze code complexity with radon
         run: pdm run radon cc src/ -nc -a

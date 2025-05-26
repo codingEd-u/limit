@@ -2,6 +2,8 @@
 
 **LIMIT** is a minimal, extensible programming language with a clean REPL, strict syntax, and support for multi-target transpilation. Designed for **clarity**, **fast iteration**, and **education**, it provides a lightweight platform for experimenting with core language design, interpreters, and compilation.
 
+![CI](https://github.com/codingEd-u/limit/actions/workflows/ci.yml/badge.svg)
+
 ---
 
 ##  Features

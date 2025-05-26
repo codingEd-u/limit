@@ -1,0 +1,4 @@
+# Global ownership rule: all files must be approved by @codingEd-u
+* @codingEd-u
+
+/.github/CODEOWNERS @codingEd-u
