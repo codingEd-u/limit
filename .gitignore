@@ -233,3 +233,4 @@ tests/__snapshots__/
 .pre-commit-cache/
 .benchmarks/
 monkeytype.sqlite3
+.secrets

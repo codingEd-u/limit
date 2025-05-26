@@ -1,0 +1,17 @@
+# Default event to run
+-P push
+
+# Use specific image for GitHub runner emulation
+-P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-latest
+
+# Clean up after run
+--rm
+
+# Bind mount for correct file access
+--bind
+
+# Set required env vars for coverage and CI logic
+--env COVERAGE_PROCESS_START=.coveragerc
+
+# Verbose logging for local debugging
+--verbose

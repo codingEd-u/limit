@@ -6,7 +6,12 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  COVERAGE_PROCESS_START: .coveragerc
+
+
 jobs:
+
   test:
     runs-on: ubuntu-latest
     steps:
@@ -46,6 +51,8 @@ jobs:
       # 8) Run tests with coverage
       - name: Run tests with coverage
         run: pdm run pytest --cov=limit
+        env:
+          COVERAGE_PROCESS_START: pyproject.toml
 
       # 10) Run radon (complexity analysis)
       - name: Analyze code complexity with radon

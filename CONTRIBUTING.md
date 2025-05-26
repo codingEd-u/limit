@@ -152,6 +152,86 @@ git checkout -b feat/your-feature-name
 
 ---
 
+Here’s the updated version of your `CONTRIBUTING.md` with a new section titled **"Local CI Testing with `act`"** added at the end, just before the license section:
+
+---
+
+
+## ✅ Local CI Testing with `act`
+
+We use [`act`](https://github.com/nektos/act) to run GitHub Actions locally, allowing fast feedback on CI pipelines without pushing to GitHub.
+
+### 💡 Why Use `act`?
+
+Running `act` locally helps you:
+
+* Validate GitHub Actions workflows before pushing
+* Detect pre-commit and coverage errors early
+* Simulate tagged releases and `workflow_dispatch` inputs
+* Shorten iteration cycles dramatically
+
+---
+
+### 🚀 How to Run the Release Workflow Locally
+
+1. **Install `act`:**
+   [https://github.com/nektos/act#installation](https://github.com/nektos/act#installation)
+
+2. **Create a `.secrets` file in your project root:**
+
+```env
+GITHUB_TOKEN=ghp_yourRealPersonalAccessToken
+```
+
+> Your token must have `repo`, `workflow`, and `write:packages` scopes if you use private actions.
+
+3. **Run the release workflow:**
+
+```bash
+act workflow_dispatch --input version=0.1.0-alpha -W .github/workflows/release.yml -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-latest --env ACT=true
+```
+
+This:
+
+* Injects `version=0.1.0-alpha`
+* Uses your `.secrets` token for GitHub access
+* Mocks `ACT=true` to skip real git push steps
+* Tests the full `release.yml` workflow safely inside Docker
+
+---
+
+### 🧪 Other Examples
+
+* **Default test suite:**
+
+```bash
+act -j test
+```
+
+* **Force clean run:**
+
+```bash
+act -j test --rm --container-architecture linux/amd64
+```
+
+* **Simulate a push event:**
+
+```bash
+act push
+```
+
+* **Debug volume paths:**
+
+```bash
+act -j test --bind
+```
+
+---
+
+> ⚠️ `coverage.py` may raise teardown errors inside Docker containers. This project safely monkeypatches `coverage.collector` to avoid false crashes. Coverage will still export correctly.
+
+---
+
 ## License
 
 All contributions are accepted under the terms of the [MIT License](./LICENSE).

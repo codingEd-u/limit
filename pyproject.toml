@@ -83,6 +83,11 @@ addopts = "--cov=limit --cov-report=term-missing"
 [tool.coverage.run]
 source = ["limit"]
 branch = true
+parallel = true
+concurrency = ["thread", "multiprocessing"]
+
+[tool.coverage.paths]
+source = ["src"]
 
 [tool.pdm.resolution]
 python = "3.12"
