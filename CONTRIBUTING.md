@@ -157,11 +157,11 @@ Here’s the updated version of your `CONTRIBUTING.md` with a new section titled
 ---
 
 
-## ✅ Local CI Testing with `act`
+## Local CI Testing with `act`
 
 We use [`act`](https://github.com/nektos/act) to run GitHub Actions locally, allowing fast feedback on CI pipelines without pushing to GitHub.
 
-### 💡 Why Use `act`?
+### Why Use `act`?
 
 Running `act` locally helps you:
 
@@ -172,7 +172,7 @@ Running `act` locally helps you:
 
 ---
 
-### 🚀 How to Run the Release Workflow Locally
+### How to Run the Release Workflow Locally
 
 1. **Install `act`:**
    [https://github.com/nektos/act#installation](https://github.com/nektos/act#installation)
@@ -188,19 +188,19 @@ GITHUB_TOKEN=ghp_yourRealPersonalAccessToken
 3. **Run the release workflow:**
 
 ```bash
-act workflow_dispatch --input version=0.1.0-alpha -W .github/workflows/release.yml -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-latest --env ACT=true
+act workflow_dispatch --input version=0.0.1-alpha -W .github/workflows/release.yml -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-latest --env ACT=true -v
 ```
 
 This:
 
-* Injects `version=0.1.0-alpha`
+* Injects `version=0.0.1-alpha`
 * Uses your `.secrets` token for GitHub access
 * Mocks `ACT=true` to skip real git push steps
 * Tests the full `release.yml` workflow safely inside Docker
 
 ---
 
-### 🧪 Other Examples
+### Other Examples
 
 * **Default test suite:**
 
@@ -231,6 +231,34 @@ act -j test --bind
 > ⚠️ `coverage.py` may raise teardown errors inside Docker containers. This project safely monkeypatches `coverage.collector` to avoid false crashes. Coverage will still export correctly.
 
 ---
+
+### 🚨 Warning: Avoid Running `act` in the Same Terminal as Your Dev Environment
+
+> 🚨 `act` runs GitHub Actions inside Docker containers and may **corrupt or lock your local `.venv`** if run in the same terminal session as your Python development environment.
+>
+> This project **recommends launching `act` in a separate terminal** to avoid:
+>
+> * `.venv` errors (`WinError 2`, `145`, missing interpreter paths)
+> * Broken `pre-commit` hooks (especially `radon`, `pylint`, and `mypy`)
+> * Virtualenv creation loops or partial deletions
+>
+> If you accidentally run `act` in the same session:
+>
+> 1. Close the terminal
+> 2. Delete `.venv`
+> 3. Open a new terminal and run `pdm install` or recreate your virtual environment.
+
+## Safe usage:
+
+```bash
+# Open a second terminal before running act
+act workflow_dispatch ...
+```
+
+---
+
+Let me know if you want a short `echo` version to print during `pre-commit` too.
+
 
 ## License
 

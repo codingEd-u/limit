@@ -234,3 +234,4 @@ tests/__snapshots__/
 .benchmarks/
 monkeytype.sqlite3
 .secrets
+run_act_temp.sh

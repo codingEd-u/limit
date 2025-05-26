@@ -18,6 +18,29 @@
 
 ---
 
+## 📚 Documentation
+
+Full documentation available at:
+
+👉 **[https://your-user.github.io/limit](https://your-user.github.io/limit)**
+
+Includes:
+
+* Syntax Reference
+* REPL Usage
+* Language Examples
+* Internals (Lexer, Parser, Transpiler)
+
+To build or serve docs locally:
+
+```bash
+pdm run docs         # Launch local dev server
+pdm run docs-build   # Build static site to ./site
+pdm run docs-deploy  # Deploy to GitHub Pages
+```
+
+---
+
 ## Quickstart
 
 ### 1. Clone & Install
@@ -141,10 +164,9 @@ pdm run python -m limit.limit_cli
 ### Example: hello.limit
 
 ```limit
-@ f()
-{
+@ f() {
   = msg "Hello, LIMIT!"
-  PRINT msg
+  ! msg
 }
 
 CALL f
@@ -155,12 +177,10 @@ CALL f
 ### Example: Counter
 
 ```limit
-@ counter()
-{
+@ counter() {
   = x 0
-  WHILE [< x 5]
-  {
-    PRINT x
+  WHILE [< x 5] {
+    ! x
     = x [+ x 1]
   }
 }

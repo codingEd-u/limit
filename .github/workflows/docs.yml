@@ -1,0 +1,35 @@
+name: Build & Deploy Docs
+
+on:
+  push:
+    branches: [main]  
+
+permissions:
+  contents: write
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Install PDM & Project
+        run: |
+          pip install pdm
+          pdm install
+
+      - name: Install MkDocs Tools
+        run: |
+          pip install mkdocs mkdocs-material mkdocstrings[python] mkdocs-autorefs
+
+      - name: Build Docs (Verify)
+        run: mkdocs build --strict
+
+      - name: Deploy to GitHub Pages
+        run: mkdocs gh-deploy --force

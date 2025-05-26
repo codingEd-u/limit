@@ -1,3 +1,26 @@
+"""
+Interactive REPL (Read-Eval-Print Loop) for the LIMIT programming language.
+
+This module provides an interactive command-line loop for writing, parsing, and executing
+LIMIT code in real time. It enables users to experiment with the LIMIT language directly.
+
+Features:
+    - Parses and evaluates both expressions and full LIMIT statements.
+    - Transpiles LIMIT source code to a target language (default: Python).
+    - Executes code using a shared session environment.
+    - Handles multi-line bracket-balanced input.
+    - Supports alias remapping via inline `SUGAR` commands.
+    - Enables importing external `.limit` files within the REPL session.
+    - Offers a toggleable verbose mode for inspecting emitted Python expressions.
+
+Functions:
+    - `start_repl(target: str = "py", verbose: bool = False)`: Launches the REPL with optional target and verbosity.
+    - `handle_sugar_command(src: str) -> bool`: Parses and applies alias remapping commands.
+    - `is_expression_node(node: ASTNode) -> bool`: Determines whether a node is an expression.
+    - `print_traceback()`: Prints any exception raised during transpilation or execution.
+    - `main()`: Entry point for standalone REPL mode.
+"""
+
 import io
 
 # import os
@@ -24,6 +47,19 @@ uimap = UserInterfaceMapper.from_canonical()
 
 
 def is_expression_node(node: ASTNode) -> bool:
+    """
+    Determines whether a given AST node represents an expression.
+
+    This includes basic expressions like arithmetic, boolean, identifiers,
+    literals, calls, and member accesses, as well as top-level `expr_stmt` nodes
+    whose children are valid expression kinds.
+
+    Args:
+        node (ASTNode): The AST node to check.
+
+    Returns:
+        bool: True if the node is an expression node, False otherwise.
+    """
     is_base_expr = node.kind in {
         "arith",
         "bool",
@@ -47,6 +83,12 @@ def is_expression_node(node: ASTNode) -> bool:
 
 
 def print_traceback() -> None:
+    """
+    Captures and prints the current exception traceback.
+
+    This function redirects the traceback output to a string buffer,
+    then prints it with a standardized error prefix.
+    """
     buf = io.StringIO()
     traceback.print_exc(file=buf)
     print("[error] >>>")
@@ -54,6 +96,20 @@ def print_traceback() -> None:
 
 
 def handle_sugar_command(src: str) -> bool:
+    """
+    Handles dynamic `SUGAR` commands in the LIMIT REPL for alias configuration.
+
+    If the input string starts with `SUGAR`, this function parses the remainder
+    as a mapping of aliases to token symbols. It supports grouped aliases using
+    Python literals (e.g., `{"and": "AND", ("plus", "add"): "PLUS"}`) and
+    updates the internal alias mapper accordingly.
+
+    Args:
+        src: The raw input string entered into the REPL.
+
+    Returns:
+        True if the command was recognized and handled; False otherwise.
+    """
     src = src.strip()
     if not src.upper().startswith("SUGAR"):
         return False
@@ -460,6 +516,28 @@ def handle_sugar_command(src: str) -> bool:
 
 
 def start_repl(target: str = "py", verbose: bool = False) -> None:
+    """
+    Launches the interactive REPL (Read-Eval-Print Loop) for the LIMIT language.
+
+    The REPL allows users to type LIMIT statements or expressions line by line.
+    It supports:
+      - Multi-line block parsing with brace matching
+      - Dynamic expression evaluation and statement execution
+      - Importing external `.limit` files
+      - Real-time sugar alias remapping via `SUGAR` commands
+      - Verbose mode for debugging emitted Python expressions
+      - Module context switching with `MODULE` declarations
+
+    Transpilation occurs to the selected `target` language (default: Python),
+    and execution is done in a shared `env_globals` namespace for persistence.
+
+    Args:
+        target: The transpilation target (e.g., "py" or "c").
+        verbose: If True, prints emitted Python expressions before execution.
+
+    Returns:
+        None
+    """
     print(f"Limit REPL [target={target}]. Type 'exit' or 'quit' to leave.")
     env_globals: dict[str, Any] = {}
     current_module: str | None = None
