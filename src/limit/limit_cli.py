@@ -129,5 +129,5 @@ def main() -> None:
         )
 
 
-if __name__ == "__main__":
+if __name__ == "__main__" and not any("pytest" in arg for arg in sys.argv):
     main()
