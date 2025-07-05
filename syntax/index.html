@@ -1,0 +1,1420 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../quickstart/">
+      
+      
+        <link rel="next" href="../repl/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+    
+    
+      
+        <title>Syntax Cheatsheet - LIMIT Language Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#syntax-cheatsheet" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="LIMIT Language Docs" class="md-header__button md-logo" aria-label="LIMIT Language Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LIMIT Language Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Syntax Cheatsheet
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="LIMIT Language Docs" class="md-nav__button md-logo" aria-label="LIMIT Language Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LIMIT Language Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Guide
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Guide
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Syntax Cheatsheet
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Syntax Cheatsheet
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#control-structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      Control Structures
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#function-invocation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Function &amp; Invocation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#input-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Input &amp; Output
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#classes-objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      Classes &amp; Objects
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modules
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#propagation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Propagation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#literals" class="md-nav__link">
+    <span class="md-ellipsis">
+      Literals
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prefix-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prefix Operators
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#symbols-delimiters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Symbols &amp; Delimiters
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#for-loop-enhancements" class="md-nav__link">
+    <span class="md-ellipsis">
+      FOR Loop Enhancements
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#types-identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Types &amp; Identifiers
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sugar-mapping-aliases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sugar Mapping (Aliases)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    REPL Usage
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            API Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/limit_lexer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Lexer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/limit_parser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Parser
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/limit_ast/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    AST
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/limit_cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CLI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/limit_repl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    REPL Engine
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/limit_py_emitter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python Emitter
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/limit_uimap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    UserInterface Mapper
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/limit_constants/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Constants
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#control-structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      Control Structures
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#function-invocation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Function &amp; Invocation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#input-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Input &amp; Output
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#classes-objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      Classes &amp; Objects
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modules
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#propagation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Propagation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#literals" class="md-nav__link">
+    <span class="md-ellipsis">
+      Literals
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prefix-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prefix Operators
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#symbols-delimiters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Symbols &amp; Delimiters
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#for-loop-enhancements" class="md-nav__link">
+    <span class="md-ellipsis">
+      FOR Loop Enhancements
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#types-identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Types &amp; Identifiers
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sugar-mapping-aliases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sugar Mapping (Aliases)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="syntax-cheatsheet">Syntax Cheatsheet</h1>
+<p>This is the <strong>canonical token mapping</strong> for the LIMIT programming language, with examples after every group. Each token maps to a normalized internal parser type.</p>
+<hr />
+<h2 id="control-structures">Control Structures</h2>
+<table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Token</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>?</code></td>
+<td><code>IF</code></td>
+</tr>
+<tr>
+<td><code>else</code></td>
+<td><code>ELSE</code></td>
+</tr>
+<tr>
+<td><code>=</code></td>
+<td><code>ASSIGN</code></td>
+</tr>
+<tr>
+<td><code>!</code></td>
+<td><code>PRINT</code></td>
+</tr>
+<tr>
+<td><code>WHILE</code></td>
+<td><code>LOOP_WHILE</code></td>
+</tr>
+<tr>
+<td><code>FOR</code></td>
+<td><code>LOOP_FOR</code></td>
+</tr>
+<tr>
+<td><code>BREAK</code></td>
+<td><code>BREAK</code></td>
+</tr>
+<tr>
+<td><code>CONTINUE</code></td>
+<td><code>CONTINUE</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-limit">? (&gt; x 10) { ! &quot;Too big&quot; } else { ! &quot;OK&quot; }
+
+= count 0
+
+WHILE [&lt; count 3] {
+  ! count
+  = count [+ count 1]
+}
+
+FOR i TO 3 {
+  ! i
+}
+
+BREAK
+CONTINUE
+</code></pre>
+<hr />
+<h2 id="function-invocation">Function &amp; Invocation</h2>
+<table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Token</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>@</code></td>
+<td><code>FUNC</code></td>
+</tr>
+<tr>
+<td><code>CALL</code></td>
+<td><code>CALL</code></td>
+</tr>
+<tr>
+<td><code>RETURN</code></td>
+<td><code>RETURN</code></td>
+</tr>
+<tr>
+<td><code>SKIP</code></td>
+<td><code>SKIP</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-limit">@ add(x, y) {
+  RETURN [+ x y]
+}
+
+! [CALL add 1 2]
+
+@ doNothing() {
+  SKIP
+}
+</code></pre>
+<hr />
+<h2 id="input-output">Input &amp; Output</h2>
+<table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Token</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>INPUT</code></td>
+<td><code>INPUT</code></td>
+</tr>
+<tr>
+<td><code>FROM</code></td>
+<td><code>DELIM_FROM</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-limit">INPUT name
+INPUT age: int
+INPUT score: float
+INPUT FROM &quot;data.txt&quot;
+</code></pre>
+<hr />
+<h2 id="error-handling">Error Handling</h2>
+<table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Token</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TRY</code></td>
+<td><code>TRY</code></td>
+</tr>
+<tr>
+<td><code>CATCH</code></td>
+<td><code>CATCH</code></td>
+</tr>
+<tr>
+<td><code>FINALLY</code></td>
+<td><code>FINALLY</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-limit">TRY {
+  = x [/ 1 0]
+} CATCH {
+  ! &quot;Error&quot;
+} FINALLY {
+  ! &quot;Cleanup&quot;
+}
+</code></pre>
+<hr />
+<h2 id="classes-objects">Classes &amp; Objects</h2>
+<table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Token</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CLASS</code></td>
+<td><code>CLASS</code></td>
+</tr>
+<tr>
+<td><code>EXTENDS</code></td>
+<td><code>EXTENDS</code></td>
+</tr>
+<tr>
+<td><code>NEW</code></td>
+<td><code>NEW</code></td>
+</tr>
+<tr>
+<td><code>THIS</code></td>
+<td><code>THIS</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-limit">CLASS Point {
+  @ init(self, x, y) {
+    = self.x x
+    = self.y y
+  }
+}
+
+= p NEW Point(1, 2)
+! p.x
+</code></pre>
+<hr />
+<h2 id="modules">Modules</h2>
+<table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Token</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MODULE</code></td>
+<td><code>MODULE</code></td>
+</tr>
+<tr>
+<td><code>IMPORT</code></td>
+<td><code>IMPORT</code></td>
+</tr>
+<tr>
+<td><code>EXPORT</code></td>
+<td><code>EXPORT</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-limit">MODULE mymod
+IMPORT &quot;file.limit&quot;
+
+@ foo() {
+  RETURN 1
+}
+EXPORT foo
+</code></pre>
+<hr />
+<h2 id="propagation">Propagation</h2>
+<table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Token</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$</code></td>
+<td><code>PROP</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-limit">@ maybe(x) {
+  $ x
+  RETURN 0
+}
+CALL maybe(42)
+</code></pre>
+<hr />
+<h2 id="literals">Literals</h2>
+<table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Token</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TRUE</code></td>
+<td><code>LITERAL</code></td>
+</tr>
+<tr>
+<td><code>FALSE</code></td>
+<td><code>LITERAL</code></td>
+</tr>
+<tr>
+<td><code>NULL</code></td>
+<td><code>LITERAL</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-limit">= flag TRUE
+= nope FALSE
+= x NULL
+</code></pre>
+<hr />
+<h2 id="prefix-operators">Prefix Operators</h2>
+<table>
+<thead>
+<tr>
+<th>Symbol(s)</th>
+<th>Token</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>+</code></td>
+<td><code>PLUS</code></td>
+</tr>
+<tr>
+<td><code>-</code></td>
+<td><code>SUB</code></td>
+</tr>
+<tr>
+<td><code>*</code></td>
+<td><code>MULT</code></td>
+</tr>
+<tr>
+<td><code>/</code></td>
+<td><code>DIV</code></td>
+</tr>
+<tr>
+<td><code>%</code></td>
+<td><code>MOD</code></td>
+</tr>
+<tr>
+<td><code>==</code>, <code>EQ</code></td>
+<td><code>EQ</code></td>
+</tr>
+<tr>
+<td><code>!=</code>, <code>NE</code></td>
+<td><code>NE</code></td>
+</tr>
+<tr>
+<td><code>&lt;</code></td>
+<td><code>LT</code></td>
+</tr>
+<tr>
+<td><code>&gt;</code></td>
+<td><code>GT</code></td>
+</tr>
+<tr>
+<td><code>&lt;=</code></td>
+<td><code>LE</code></td>
+</tr>
+<tr>
+<td><code>&gt;=</code></td>
+<td><code>GE</code></td>
+</tr>
+<tr>
+<td><code>AND</code></td>
+<td><code>AND</code></td>
+</tr>
+<tr>
+<td><code>OR</code></td>
+<td><code>OR</code></td>
+</tr>
+<tr>
+<td><code>NOT</code></td>
+<td><code>NOT</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-limit">[+ 1 2]
+[* 3 4]
+[== a b]
+[AND TRUE FALSE]
+[NOT TRUE]
+</code></pre>
+<hr />
+<h2 id="symbols-delimiters">Symbols &amp; Delimiters</h2>
+<table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Token</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>(</code> <code>)</code></td>
+<td><code>LPAREN</code>, <code>RPAREN</code></td>
+</tr>
+<tr>
+<td><code>[</code> <code>]</code></td>
+<td><code>LBRACK</code>, <code>RBRACK</code></td>
+</tr>
+<tr>
+<td><code>{</code> <code>}</code></td>
+<td><code>LBRACE</code>, <code>RBRACE</code></td>
+</tr>
+<tr>
+<td><code>.</code></td>
+<td><code>DOT</code></td>
+</tr>
+<tr>
+<td><code>:</code></td>
+<td><code>COLON</code></td>
+</tr>
+<tr>
+<td><code>,</code></td>
+<td><code>COMMA</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-limit">! [CALL sum(1, 2)]
+= obj.field
+@ f(x: int) { ! x }
+</code></pre>
+<hr />
+<h2 id="for-loop-enhancements">FOR Loop Enhancements</h2>
+<table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Token</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TO</code></td>
+<td><code>DELIM_TO</code></td>
+</tr>
+<tr>
+<td><code>AT</code></td>
+<td><code>DELIM_AT</code></td>
+</tr>
+<tr>
+<td><code>BY</code></td>
+<td><code>DELIM_BY</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-limit">FOR i TO 3 {
+  ! i
+}
+
+FOR j AT 1 TO 5 {
+  ! j
+}
+
+FOR k AT 10 TO 0 BY -2 {
+  ! k
+}
+</code></pre>
+<hr />
+<h2 id="types-identifiers">Types &amp; Identifiers</h2>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Token</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>"text"</code></td>
+<td><code>STRING</code></td>
+</tr>
+<tr>
+<td><code>42</code></td>
+<td><code>NUMBER</code></td>
+</tr>
+<tr>
+<td><code>3.14</code></td>
+<td><code>FLOAT</code></td>
+</tr>
+<tr>
+<td><code>my_var</code>, <code>café</code></td>
+<td><code>IDENT</code> (Unicode supported)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-limit">= name &quot;Alice&quot;
+= age 42
+= pi 3.14
+= café &quot;crème brûlée&quot;
+</code></pre>
+<hr />
+<h2 id="sugar-mapping-aliases">Sugar Mapping (Aliases)</h2>
+<p>LIMIT allows alternate names for tokens using <code>SUGAR</code> blocks.</p>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-limit">SUGAR {
+  [&quot;add&quot;, &quot;sum&quot;, &quot;plus&quot;]: &quot;PLUS&quot;
+}
+SUGAR {
+  [&quot;increase&quot;, &quot;inc&quot;]: &quot;PLUS&quot;
+}
+</code></pre>
+<p>Use these to customize the language surface for a domain-specific use case or natural-language style.</p>
+<hr />
+<p>Want to try these live? Jump to the <a href="../repl/">REPL Usage Guide</a>.</p>
+<p>```</p>
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+    
+  </body>
+</html>
