@@ -150,9 +150,6 @@ git checkout -b feat/your-feature-name
 3. Format, type-check, and lint
 4. Push and open a pull request to `main`
 
----
-
-Here’s the updated version of your `CONTRIBUTING.md` with a new section titled **"Local CI Testing with `act`"** added at the end, just before the license section:
 
 ---
 

@@ -178,7 +178,7 @@ pdm build
 Install system-wide:
 
 ```bash
-pip install dist/limit-0.0.1-alpha-py3-none-any.whl
+pip install dist/limit-0.0.1a0-py3-none-any.whl
 ```
 
 Now you can run:

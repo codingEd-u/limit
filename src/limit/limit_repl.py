@@ -33,6 +33,7 @@ import traceback
 from typing import Any
 
 from limit.limit_ast import ASTNode
+from limit.limit_constants import token_hashmap
 from limit.limit_lexer import CharacterStream, Lexer, Token
 from limit.limit_parser import Parser
 from limit.limit_transpile import Transpiler
@@ -93,6 +94,15 @@ def print_traceback() -> None:
     traceback.print_exc(file=buf)
     print("[error] >>>")
     print(buf.getvalue())
+
+
+def normalize_source_with_uimap(src: str, uimap: UserInterfaceMapper) -> str:
+    for alias, canonical in uimap.token_map.items():
+        for canonical_form, token in token_hashmap.items():
+            if token == canonical:
+                src = src.replace(alias, canonical_form)
+                break
+    return src
 
 
 def handle_sugar_command(src: str) -> bool:
@@ -585,6 +595,7 @@ def start_repl(target: str = "py", verbose: bool = False) -> None:
                 try:
                     with open(import_path, encoding="utf-8") as f:
                         file_src = f.read()
+                    file_src = normalize_source_with_uimap(file_src, uimap)
                     lexer = Lexer(CharacterStream(file_src))
                     file_tokens: list[Token] = []
                     while True:
@@ -613,7 +624,7 @@ def start_repl(target: str = "py", verbose: bool = False) -> None:
                 except Exception as e:
                     print(f"[import error] >>> {e}")
                 continue
-
+            src = normalize_source_with_uimap(src, uimap)
             lexer = Lexer(CharacterStream(src, 0, 1, 1))
             tokens: list[Token] = []
             try:
